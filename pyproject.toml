@@ -5,8 +5,7 @@ profile = "black"
 max-line-length = 88
 exclude = [".venv", "__pycache__",]
 # Ignore some of the most obnoxious linting errors.
-ignore = 
-[
+ignore = [
     "W503", "E226",
     # Missing Docstrings
     "D100", "D104", "D105", "D106", "D107",
