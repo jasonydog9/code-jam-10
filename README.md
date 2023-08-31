@@ -170,4 +170,4 @@ A code jam project is left unmaintained after the end of the event. If the depen
 
 Don't forget to replace this README with an actual description of your project! Images are also welcome!
 
-We hope this template will be helpful. Good luck in the jam! Go Pickled Peps!
+We hope this template will be helpful. Good luck in the jam!
