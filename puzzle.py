@@ -1,12 +1,18 @@
-import numpy as np
-import pygame
-import PIL
 import random
 
-"""Parent class Puzzle
-    Description: All image puzzles are a subset of this class. This class splits a puzzle image up 
-into individual pieces that can be modified, moved, and deleted. This module assumes that puzzles will have the same 
-number or pieces tall as they are wide, so rectangular puzzles will have rectangular pieces.
+import numpy as np
+import PIL
+import pygame
+
+
+class Puzzle:
+    """
+    Parent class Puzzle
+
+    Description: All image puzzles are a subset of this class. This class splits a
+    puzzle image up into individual pieces that can be modified, moved, and deleted.
+    This module assumes that puzzles will have the same number of pieces tall as they
+    are wide, so rectangular puzzles will have rectangular pieces.
 
     Inputs:
 
@@ -14,7 +20,7 @@ number or pieces tall as they are wide, so rectangular puzzles will have rectang
             A PIL image, returned by Image.open('some_image_file.png').
 
         pieces_per_side:
-            Determines how many pieces the puzzle is cut into. 
+            Determines how many pieces the puzzle is cut into.
             will slightly shrink the image if the pieces cannot fit evenly into it.
             ^^^ This will leave a border around the image
 
@@ -31,15 +37,16 @@ number or pieces tall as they are wide, so rectangular puzzles will have rectang
         This is the number of pieces on any given section of the puzzle ( see below )
         if pieces_per_side is 5:
             puzzle looks like:
-                   r * * * * * 
-                   | * * * * * 
+                   r * * * * *
+                   | * * * * *
            5 pieces| * * * * *
                    | * * * * *
                    L * * * * *
         and total_pieces is 25.
 
     image:
-        this is how the puzzle currently looks. On initialization, the puzzle looks like the input image.
+        this is how the puzzle currently looks.
+        On initialization the puzzle looks like the input image.
 
     orderlist:
         This is a list of length total_pieces containing the order of the pieces.
@@ -51,10 +58,8 @@ number or pieces tall as they are wide, so rectangular puzzles will have rectang
         puzzle looks like:
         [ 1 , 0 ,
           2 , 3 ]
-"""
+    """
 
-
-class Puzzle:
     def __init__(
         self,
         image: PIL.Image,
@@ -80,15 +85,16 @@ class Puzzle:
         self.puzzle_x, self.puzzle_y = puzzle_pos
         self.event = []
 
-    """
-            modify_image(image, output_size)
-                Resizes the input image to the output size.
-                Splits the image into total_pieces parts, then creates a PuzzlePiece object from the image.
-                PuzzlePiece object is stored in a list called pieces.
-                Raises an Exception if the resized image cannot be divided into total_pieces without remainder.
-    """
-
     def modify_image(self, image: PIL.Image, output_size: tuple[int, int]):
+        """
+        modify_image(image, output_size)
+
+            Resizes the input image to the output size.
+        Splits the image into total_pieces parts, then creates a PuzzlePiece object from
+        the image. PuzzlePiece object is stored in a list called pieces. Raises an
+        Exception if the resized image cannot be divided into total_pieces without
+        remainder.
+        """
         if output_size:
             image = image.resize(output_size)
         image = image.resize(
@@ -121,13 +127,14 @@ class Puzzle:
         ]
         return image, np.array(image).shape, return_pieces
 
-    """
-            get_tile_index_from_pos(mouse_position):
-                Uses puzzle_pos and mouse_position to determine which puzzle piece the mouse is currently over.
-                Returns the orderlist index of the tile
-    """
-
     def get_tile_index_from_pos(self, mouse_pos: tuple[int, int]):
+        """
+        get_tile_index_from_pos(mouse_position):
+
+            Uses puzzle_pos and mouse_position to determine which puzzle piece the
+            mouse is currently over.
+            Returns the orderlist index of the tile
+        """
         mouse_x, mouse_y = mouse_pos[0] - self.puzzle_x, mouse_pos[1] - self.puzzle_y
         if (
             mouse_x < 0
@@ -142,36 +149,39 @@ class Puzzle:
         )
         return tile_index
 
-    """
-            get_tile_from_pos(mouse_position):
-                Calls get_tile_index_from_pos(mouse_position)
-                returns the pieces index of the tile, which can be used to access the tile through pieces[index]
-    """
-
     def get_tile_from_pos(self, mouse_pos: tuple[int, int]):
+        """
+        get_tile_from_pos(mouse_position):
+
+            Calls get_tile_index_from_pos(mouse_position)
+            returns the pieces index of the tile, which can be used to access the
+            tile through pieces[index]
+        """
         tile_index = self.get_tile_index_from_pos(mouse_pos)
         if tile_index is None:
             return None
         return self.orderlist[tile_index]
 
-    """
-            generate_orderlist():
-                re-creates the orderlist from the relative_x and relative_y values of every PuzzlePiece
-                it is a good idea to call this before using image_update()
-    """
-
     def generate_orderlist(self, origin_tile: int = 0):
+        """
+        generate_orderlist():
+
+            re-creates the orderlist from the relative_x and relative_y values of
+            every PuzzlePiece
+            it is a good idea to call this before using image_update()
+        """
         for i in self.pieces:
             i.relative_index = i.relative_y * self.pieces_per_side + i.relative_x
             self.orderlist[i.relative_index] = i.absolute_index
 
-    """
-            image_update():
-                updates the puzzle image to reflect the order in orderlist. This should be called
-                at the end of every loop where the puzzle is changed
-    """
-
     def image_update(self):
+        """
+        image_update():
+
+            updates the puzzle image to reflect the order in orderlist.
+            This should be called at the end of every loop where
+            the puzzle is changed
+        """
         temp_array = [
             np.concatenate(tuple([self.pieces[i].image for i in j]), axis=1)
             for j in [
@@ -187,6 +197,8 @@ class Puzzle:
 
 
 class SlidingPuzzle(Puzzle):
+    """Container class for the Sliding Puzzle"""
+
     UP = (0, -1)
     DOWN = (0, 1)
     LEFT = (-1, 0)
@@ -207,6 +219,12 @@ class SlidingPuzzle(Puzzle):
         self.image_update()
 
     def scramble(self):
+        """
+        Summary
+
+        Removes the last piece of puzzle, shuffles the puzzle, and then re-inserts
+        the last puzzle piece.
+        """
         self.orderlist.pop()
         self.last_piece = self.pieces.pop()
         self.last_image = self.last_piece.image
@@ -229,6 +247,7 @@ class SlidingPuzzle(Puzzle):
             )
 
     def loop(self, event: pygame.event):
+        """Loop to be run at every event to see how the puzzle should react"""
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_start = pygame.mouse.get_pos()
             temp = self.get_tile_index_from_pos(mouse_start)
@@ -237,6 +256,13 @@ class SlidingPuzzle(Puzzle):
                 self.event.append(SlidingPuzzle.UPDATE)
 
     def tile_can_move(self, tile_index: int):
+        """
+        Summary
+
+        Takes a given tile index and detects if the last (blank) tile is in that row.
+        If it finds it, it returns the tiles that can move and the direction they can
+        move in
+        """
         # Get tiles in row
         orderlist_index_start = (
             tile_index // self.pieces_per_side * self.pieces_per_side
@@ -282,6 +308,13 @@ class SlidingPuzzle(Puzzle):
         return direction, movable, tile_index
 
     def move(self, direction_tile_list_origin_tile: tuple[tuple[int, int], list, int]):
+        """
+        Summary
+
+        Given the list of tiles, the move direction, and the originating tile,
+        this function changes the relative_x and relative_y of pieces to cause
+        puzzle shifts
+        """
         direction, tile_list, origin_tile = direction_tile_list_origin_tile
         if direction == SlidingPuzzle.NO_MOVE:
             return 0
@@ -295,6 +328,12 @@ class SlidingPuzzle(Puzzle):
         self.image_update()
 
     def generate_orderlist(self, origin_tile: int):
+        """
+        Summary
+
+        Overridden generate_orderlist function that generates an orderlist
+        and moves the blank tile to the tile that the player clicked on
+        """
         for i in self.pieces:
             if i.absolute_index == self.total_pieces - 1:
                 i.relative_y = origin_tile // self.pieces_per_side
@@ -307,6 +346,12 @@ class SlidingPuzzle(Puzzle):
         self.orderlist[origin_tile] = self.total_pieces - 1
 
     def solvable(self, unsorted: list[int]):
+        """
+        Summary
+
+        This function performs inversion counting on a list.
+        If the number of inversions is even, then the puzzle is solvable
+        """
         inversions = 0
         for j in range(self.total_pieces - 1):
             for i in range(j + 1, self.total_pieces - 1):
@@ -316,6 +361,13 @@ class SlidingPuzzle(Puzzle):
 
 
 class ExamplePuzzle(Puzzle):
+    """
+    Summary
+
+    This is an empty puzzle class, you can copy and paste to make different
+    kinds of puzzles
+    """
+
     def __init__(
         self,
         image: PIL.Image,
@@ -328,16 +380,23 @@ class ExamplePuzzle(Puzzle):
         self.generate_orderlist()
         self.image_update()
 
-    def loop(self):
-        # put code here to be run every frame, such as an event loop to detect mouse clicks
+    def loop(self, event: pygame.event):
+        """
+        Summary
+
+        put code here to be run every event,
+        such as an event loop to detect mouse clicks
+        """
         pass
 
     def scramble(self):
-        # put the code to scramble your image here
+        """Put the code to scramble your puzzle here"""
         pass
 
 
 class PuzzlePiece:
+    """This is a class to store puzzle pieces and the data for them"""
+
     def __init__(self, image: PIL.Image, relative_index: int, master: Puzzle):
         self.image = image
         self.master = master
