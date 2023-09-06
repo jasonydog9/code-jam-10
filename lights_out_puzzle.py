@@ -23,6 +23,7 @@ class LightsOut(Puzzle):
         puzzle_pos: tuple[int, int] = (0, 0),
     ):
         super().__init__(image, pieces_per_side, output_size, puzzle_pos)
+        self.light_list = [False] * self.total_pieces
         self.scramble()
         self.generate_orderlist()
         self.image_update()
@@ -45,8 +46,8 @@ class LightsOut(Puzzle):
             temp_list = []
             temp_list.append(inverted_tiles)
             inverted_tiles = temp_list.copy()
-        print(inverted_tiles)
-        for i in list(inverted_tiles):
+        for i in inverted_tiles:
+            self.light_list[i] = False if self.light_list[i] else True
             self.pieces[i].image = np.multiply(
                 self.pieces[i].image,
                 np.full(self.pieces[i].image.shape, fill_value=-1, dtype=np.uint8),
@@ -69,10 +70,9 @@ class LightsOut(Puzzle):
 
     def scramble(self):
         """Put the code to scramble your puzzle here"""
-        self.light_list = [False] * (self.total_pieces // 2) + [True] * (
-            self.total_pieces - self.total_pieces // 2
-        )
-        random.shuffle(self.light_list)
-        for i, light in enumerate(self.light_list):
-            if light:
-                self.invert(i)
+        for _ in range(self.total_pieces):
+            self.invert(self.get_neighbors(random.randint(0, self.total_pieces - 1)))
+        if Puzzle.SOLVED in self.event:
+            self.scramble()
+            self.event.remove(Puzzle.SOLVED)
+        self.image_update()

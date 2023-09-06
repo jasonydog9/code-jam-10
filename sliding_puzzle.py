@@ -62,7 +62,6 @@ class SlidingPuzzle(Puzzle):
             temp = self.get_tile_index_from_pos(mouse_start)
             if temp is not None:
                 self.move(self.tile_can_move(temp))
-                self.event.append(SlidingPuzzle.UPDATE)
 
     def tile_can_move(self, tile_index: int):
         """

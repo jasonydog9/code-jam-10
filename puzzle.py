@@ -195,6 +195,7 @@ class Puzzle:
         self.image = pygame.surfarray.make_surface(
             np.swapaxes(np.concatenate(tuple(temp_array), axis=0), 0, 1)
         )
+        self.event.append(Puzzle.UPDATE)
 
 
 class PuzzlePiece:

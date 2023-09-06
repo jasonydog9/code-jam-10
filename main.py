@@ -3,35 +3,46 @@ from PIL import Image
 
 import puzzle
 from lights_out_puzzle import LightsOut
+from sliding_puzzle import SlidingPuzzle
 
-# from sliding_puzzle import SlidingPuzzle
 
-PIECES_PER_SIDE = 4
+def switch_puzzle(puzzle_index, puzzle_list: list):
+    """Changes the active puzzle"""
+    my_image = Image.open(puzzle_list[puzzle_index][1])
+    my_pieces = puzzle_list[puzzle_index][2]
+    my_puzzle = puzzle_list[puzzle_index][0](my_image, my_pieces, (380, 500))
+    return my_puzzle
+
 
 if __name__ == "__main__":
-    puzzle_image = Image.open(
-        "code-jam-10/sample_images/Monalisa.png"
-    )  # get puzzle image and data
+    current_puzzle = 0
+    puzzles = [
+        (SlidingPuzzle, "code-jam-10/sample_images/Monalisa.png", 3),
+        (LightsOut, "code-jam-10/sample_images/Monalisa.png", 4),
+    ]
+
     screen = pygame.display.set_mode((380, 500))  # Start PyGame initialization.
     # This is required in order to convert PIL images into PyGame Surfaces
     pygame.init()
-    sliding_puzzle = LightsOut(
-        puzzle_image, PIECES_PER_SIDE, (380, 500)
-    )  # Create new puzzle object given puzzle pieces
 
     running = True
 
     screen.fill((255, 0, 0))
-    screen.blit(sliding_puzzle.image, (0, 0))
+    active_puzzle = switch_puzzle(current_puzzle, puzzles)
+    screen.blit(active_puzzle.image, (0, 0))
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            sliding_puzzle.loop(event)
+            active_puzzle.loop(event)
 
-        if puzzle.Puzzle.UPDATE in sliding_puzzle.event:
-            screen.blit(sliding_puzzle.image, (0, 0))
-            sliding_puzzle.event.remove(puzzle.Puzzle.UPDATE)
+        if puzzle.Puzzle.UPDATE in active_puzzle.event:
+            screen.blit(active_puzzle.image, (0, 0))
+            active_puzzle.event.remove(puzzle.Puzzle.UPDATE)
+
+        if puzzle.Puzzle.SOLVED in active_puzzle.event:
+            current_puzzle += 1
+            active_puzzle = switch_puzzle(current_puzzle, puzzles)
 
         pygame.display.flip()
