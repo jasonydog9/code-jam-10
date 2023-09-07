@@ -1,5 +1,6 @@
 import pygame
 from PIL import Image
+import os
 
 import puzzle
 from Puzzles.flipping_puzzle import FlippingPuzzle
@@ -16,6 +17,7 @@ def switch_puzzle(puzzle_index, puzzle_list: list):
 
 
 if __name__ == "__main__":
+    os.chdir(os.path.dirname(__file__))
     current_puzzle = 0
     puzzles = [
         (FlippingPuzzle, "sample_images/Monalisa.png", 4),
