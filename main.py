@@ -19,7 +19,7 @@ if __name__ == "__main__":
     current_puzzle = 0
     puzzles = [
         (FlippingPuzzle, "sample_images/Monalisa.png", 4),
-        (SlidingPuzzle, "sample_images/Monalisa.png", 3),
+        (SlidingPuzzle, "sample_images/Monalisa.png", 4),
         (LightsOut, "sample_images/Monalisa.png", 4),
     ]
 
