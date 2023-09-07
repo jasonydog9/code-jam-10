@@ -1,15 +1,15 @@
 import random
-import sys
 
 import numpy as np
 import PIL
 import pygame
-from pygame.locals import QUIT
 
 from puzzle import Puzzle
 
 
 class FlippingPuzzle(Puzzle):
+    """Summary: breaks tiles into pieces and scrambles them by flipping them"""
+
     def __init__(
         self,
         image: PIL.Image,
@@ -32,9 +32,10 @@ class FlippingPuzzle(Puzzle):
         pass
 
     def scramble(self):
+        """Flips puzzle pieces randomly"""
         for i in range(self.total_pieces):
-            rotations = random.randint(0, 3)
-            for j in range(rotations):
+            rotations = random.randint(0, 1)
+            if rotations == 1:
                 self.flip(i)
         if Puzzle.SOLVED in self.event:
             self.scramble()
@@ -42,6 +43,10 @@ class FlippingPuzzle(Puzzle):
         self.image_update()
 
     def flip(self, tile):
+        """If tile is clicked it flips the piece and compares the updated image
+
+        to original to see if its correct
+        """
         self.pieces[tile].image = np.flip(self.pieces[tile].image, 1)
 
         self.image_update()
