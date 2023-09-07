@@ -1,6 +1,7 @@
+import os
+
 import pygame
 from PIL import Image
-import os
 
 import puzzle
 from Puzzles.flipping_puzzle import FlippingPuzzle
