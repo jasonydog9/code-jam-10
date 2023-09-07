@@ -4,6 +4,7 @@ from PIL import Image
 import puzzle
 from Puzzles.lights_out_puzzle import LightsOut
 from Puzzles.sliding_puzzle import SlidingPuzzle
+from Puzzles.flipping_puzzle import FlippingPuzzle
 
 
 def switch_puzzle(puzzle_index, puzzle_list: list):
@@ -17,8 +18,9 @@ def switch_puzzle(puzzle_index, puzzle_list: list):
 if __name__ == "__main__":
     current_puzzle = 0
     puzzles = [
-        (SlidingPuzzle, "code-jam-10/sample_images/Monalisa.png", 3),
-        (LightsOut, "code-jam-10/sample_images/Monalisa.png", 4),
+        (FlippingPuzzle, "sample_images/Monalisa.png", 4),
+        (SlidingPuzzle, "sample_images/Monalisa.png", 3),
+        (LightsOut, "sample_images/Monalisa.png", 4),
     ]
 
     screen = pygame.display.set_mode((380, 500))  # Start PyGame initialization.
