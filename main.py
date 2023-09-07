@@ -2,9 +2,9 @@ import pygame
 from PIL import Image
 
 import puzzle
+from Puzzles.flipping_puzzle import FlippingPuzzle
 from Puzzles.lights_out_puzzle import LightsOut
 from Puzzles.sliding_puzzle import SlidingPuzzle
-from Puzzles.flipping_puzzle import FlippingPuzzle
 
 
 def switch_puzzle(puzzle_index, puzzle_list: list):
