@@ -63,7 +63,7 @@ class Puzzle:
 
     def __init__(
         self,
-        image: PIL.Image,
+        image: PIL.Image.Image,
         pieces_per_side: int,
         output_size: tuple[int, int],
         puzzle_pos: tuple[int, int],
@@ -86,7 +86,7 @@ class Puzzle:
         self.puzzle_x, self.puzzle_y = puzzle_pos
         self.event = []
 
-    def modify_image(self, image: PIL.Image, output_size: tuple[int, int]):
+    def modify_image(self, image: PIL.Image.Image, output_size: tuple[int, int]):
         """
         modify_image(image, output_size)
 
@@ -201,7 +201,7 @@ class Puzzle:
 class PuzzlePiece:
     """This is a class to store puzzle pieces and the data for them"""
 
-    def __init__(self, image: PIL.Image, relative_index: int, master: Puzzle):
+    def __init__(self, image: PIL.Image.Image, relative_index: int, master: Puzzle):
         self.image = image
         self.master = master
         self.relative_index = relative_index

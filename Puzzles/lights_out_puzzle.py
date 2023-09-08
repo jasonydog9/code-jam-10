@@ -17,7 +17,7 @@ class LightsOut(Puzzle):
 
     def __init__(
         self,
-        image: PIL.Image,
+        image: PIL.Image.Image,
         pieces_per_side: int,
         output_size: tuple[int, int] = (),
         puzzle_pos: tuple[int, int] = (0, 0),
