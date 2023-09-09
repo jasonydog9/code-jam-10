@@ -26,7 +26,9 @@ if __name__ == "__main__":
         (LightsOut, "sample_images/Monalisa.png", 4),
     ]
 
-    screen = pygame.display.set_mode((380, 500))  # Start PyGame initialization.
+    screen = pygame.display.set_mode(
+        (380, 500), pygame.FULLSCREEN
+    )  # Start PyGame initialization.
     # This is required in order to convert PIL images into PyGame Surfaces
     pygame.init()
 
