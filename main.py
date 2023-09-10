@@ -8,6 +8,7 @@ import pygame
 from GameMap.game_map import GameMap
 from helpers import EventHandler, EventTypes
 from Player.player import Player
+from Puzzles.connector_puzzle import Connector
 from Puzzles.flipping_puzzle import FlippingPuzzle
 from Puzzles.lights_out_puzzle import LightsOut
 from Puzzles.sliding_puzzle import SlidingPuzzle
@@ -28,6 +29,8 @@ if __name__ == "__main__":
         (FlippingPuzzle, "sample_images/Monalisa.png", 4),
         (SlidingPuzzle, "sample_images/Monalisa.png", 4),
         (LightsOut, "sample_images/Monalisa.png", 4),
+        # NOTE: the sample image is not used (it could be... w/ filters?)
+        (Connector, "sample_images/Monalisa.png", 8),
     ]
 
     screen = pygame.display.set_mode(
