@@ -12,15 +12,15 @@ class LightsOut(Puzzle):
     """
     Summary
 
-    This is the Lights Out puzzle, where every piece you click on
-    causes neighboring to invert
+    This is the Lights Out puzzle, where every piece you click on causes neighboring
+    tiles to invert.
     """
 
     def __init__(
         self,
         image: PIL.Image.Image,
         pieces_per_side: int,
-        output_size: tuple[int, int] = (),
+        output_size: tuple[int, int],
         puzzle_pos: tuple[int, int] = (0, 0),
     ):
         super().__init__(image, pieces_per_side, output_size, puzzle_pos)
@@ -29,7 +29,7 @@ class LightsOut(Puzzle):
         self.generate_orderlist()
         self.image_update()
 
-    def loop(self, event: pygame.event):
+    def loop(self, event: pygame.event.Event):
         """Put your loop code here"""
         if event.type == pygame.MOUSEBUTTONUP:
             tile = self.get_tile_index_from_pos(pygame.mouse.get_pos())
@@ -37,7 +37,6 @@ class LightsOut(Puzzle):
             self.invert(neighbors)
             self.image_update()
             EventHandler.add(EventTypes.PUZZLE_SPRITE_UPDATE)
-        pass
 
     def invert(self, inverted_tiles: list[int]):
         """Invert the colors of any tile in the list"""

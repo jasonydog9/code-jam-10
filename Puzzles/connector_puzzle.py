@@ -4,6 +4,7 @@ import numpy as np
 import PIL
 import pygame
 
+from helpers import EventHandler, EventTypes
 from puzzle import Puzzle
 
 COLORS = [
@@ -26,7 +27,7 @@ class Connector(Puzzle):
         # not required:
         image: PIL.Image.Image,
         pieces_per_side: int,
-        output_size: tuple[int, int] = (),
+        output_size: tuple[int, int],
         puzzle_pos: tuple[int, int] = (0, 0),
     ):
         real_image = PIL.Image.new(image.mode, image.size, color=0xFFFFFF)
@@ -37,16 +38,16 @@ class Connector(Puzzle):
         self.generate_orderlist()
         self.image_update()
 
-    def loop(self, event: pygame.event):
+    def loop(self, event: pygame.event.Event):
         """Put your loop code here"""
         if event.type == pygame.MOUSEBUTTONUP:
             tile = self.get_tile_index_from_pos(pygame.mouse.get_pos())
             self.click_tile(tile, event.button == 3)
             self.image_update()
-            self.event.append(Puzzle.UPDATE)
+            EventHandler.add(EventTypes.PUZZLE_SPRITE_UPDATE)
 
             if self.is_solved():
-                self.event.append(Puzzle.SOLVED)
+                EventHandler.add(EventTypes.PUZZLE_SOLVED)
 
     def click_tile(self, tile: int, reverse: bool):
         """Change the colors of a tile"""

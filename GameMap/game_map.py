@@ -1,8 +1,8 @@
-import os
+import pathlib
 from typing import Sequence
 
-import numpy
 import numpy as np
+import numpy.typing as npt
 import PIL.Image
 import pygame
 
@@ -14,13 +14,13 @@ class MapSlicer:
 
     def __init__(
         self,
-        start_pos: tuple[int, int] | Sequence[int],
-        tiles_in_slice: tuple[int, int] | Sequence[int],
-        tile_pixel_size: tuple[int, int] | Sequence[int],
+        start_pos: npt.NDArray[np.int_],
+        tiles_in_slice: npt.NDArray[np.int_],
+        tile_pixel_size: npt.NDArray[np.int_],
     ):
-        self._slice_start = np.array(start_pos)
-        self._slice_size = np.array(tiles_in_slice)
-        self._slice_multi = np.array(tile_pixel_size)
+        self._slice_start = start_pos
+        self._slice_size = tiles_in_slice
+        self._slice_multi = tile_pixel_size
 
     def shift(self, shift_amount: tuple[int, int] | Sequence[int]):
         """Shift slicing window in-place"""
@@ -34,9 +34,12 @@ class MapSlicer:
         """
         start = self._slice_start * self._slice_multi
         end = (self._slice_start + self._slice_size) * self._slice_multi
+
         # Done like this since type checker complains if a comprehension is used
-        reverse = -1 if reverse else 1
-        return (slice(start[0], end[0]), slice(start[1], end[1]))[::reverse]
+        if reverse:
+            return (slice(start[1], end[1]), slice(start[0], end[0]))
+        else:
+            return (slice(start[0], end[0]), slice(start[1], end[1]))
 
 
 class GameMap:
@@ -53,12 +56,12 @@ class GameMap:
 
     def __init__(
         self,
-        floor_image_path: str | os.PathLike,
-        deco_image_path: str | os.PathLike,
-        pixels_per_tile: tuple[int, int] | Sequence[int],
-        tiles_on_screen: tuple[int, int] | Sequence[int],
+        floor_image_path: pathlib.Path,
+        deco_image_path: pathlib.Path,
+        pixels_per_tile: npt.NDArray[np.int_],
+        tiles_on_screen: npt.NDArray[np.int_],
         scaling_factor: int,
-        starting_position: tuple[int, int] | Sequence[int],
+        starting_position: npt.NDArray[np.int_],
     ):
         self._floor_image_array = np.array(PIL.Image.open(floor_image_path))
         self._deco_image_array = np.array(PIL.Image.open(deco_image_path))

@@ -15,7 +15,7 @@ class FlippingPuzzle(Puzzle):
         self,
         image: PIL.Image.Image,
         pieces_per_side: int,
-        output_size: tuple[int, int] = (),
+        output_size: tuple[int, int],
         puzzle_pos: tuple[int, int] = (0, 0),
     ):
         super().__init__(image, pieces_per_side, output_size, puzzle_pos)
@@ -23,14 +23,13 @@ class FlippingPuzzle(Puzzle):
         self.scramble()
         self.image_update()
 
-    def loop(self, event: pygame.event):
+    def loop(self, event: pygame.event.Event):
         """Put your loop code here"""
         if event.type == pygame.MOUSEBUTTONUP:
             tile = self.get_tile_index_from_pos(pygame.mouse.get_pos())
             self.flip(tile)
             self.image_update()
             EventHandler.add(EventTypes.PUZZLE_SPRITE_UPDATE)
-        pass
 
     def scramble(self):
         """Flips puzzle pieces randomly"""
@@ -41,9 +40,10 @@ class FlippingPuzzle(Puzzle):
         self.image_update()
 
     def flip(self, tile):
-        """If tile is clicked it flips the piece and compares the updated image
+        """Flips a clicked tile.
 
-        to original to see if its correct
+        If tile is clicked it flips the piece and compares the updated image to
+        original to see if its correct
         """
         self.pieces[tile].image = np.flip(self.pieces[tile].image, 1)
 

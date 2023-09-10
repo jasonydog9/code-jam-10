@@ -1,4 +1,5 @@
 import random
+import typing
 
 import numpy as np
 import PIL
@@ -21,7 +22,7 @@ class SlidingPuzzle(Puzzle):
         self,
         image: PIL.Image.Image,
         pieces_per_side: int,
-        output_size: tuple[int, int] = (),
+        output_size: tuple[int, int],
         puzzle_pos: tuple[int, int] = (0, 0),
     ):
         super().__init__(image, pieces_per_side, output_size, puzzle_pos)
@@ -56,7 +57,7 @@ class SlidingPuzzle(Puzzle):
                 pos, self.pieces_per_side
             )
 
-    def loop(self, event: pygame.event):
+    def loop(self, event: pygame.event.Event):
         """Loop to be run at every event to see how the puzzle should react"""
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_start = pygame.mouse.get_pos()
@@ -93,7 +94,7 @@ class SlidingPuzzle(Puzzle):
             if delta == 0:
                 return SlidingPuzzle.NO_MOVE, [], tile_index
             direction = SlidingPuzzle.UP if delta < 0 else SlidingPuzzle.DOWN
-            indices = [
+            indices: typing.Sequence[int] = [
                 column_number + i * self.pieces_per_side
                 for i in range(self.pieces_per_side)
             ]
@@ -130,17 +131,17 @@ class SlidingPuzzle(Puzzle):
         for i in tile_list:
             self.pieces[self.orderlist[i]].relative_x += direction[0]
             self.pieces[self.orderlist[i]].relative_y += direction[1]
-        self.generate_orderlist(origin_tile)
+        self.generate_orderlist_given_tile(origin_tile)
         if self.orderlist == list(range(self.total_pieces)):
             EventHandler.add(EventTypes.PUZZLE_SOLVED)
             self.pieces[-1].image = self.last_image
         self.image_update()
 
-    def generate_orderlist(self, origin_tile: int):
+    def generate_orderlist_given_tile(self, origin_tile: int):
         """
         Summary
 
-        Overridden generate_orderlist function that generates an orderlist
+        Different generate_orderlist function that generates an orderlist
         and moves the blank tile to the tile that the player clicked on
         """
         for i in self.pieces:

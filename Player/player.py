@@ -20,7 +20,7 @@ class MovementDirections(Enum):
     NULL = (0, 0)
 
 
-KEYPRESS_ALTERNATIVES: dict[pygame.event.EventType, MovementDirections] = {
+KEYPRESS_ALTERNATIVES: dict[int, MovementDirections] = {
     **dict.fromkeys([pygame.K_w, pygame.K_UP], MovementDirections.UP),
     **dict.fromkeys([pygame.K_s, pygame.K_DOWN], MovementDirections.DOWN),
     **dict.fromkeys([pygame.K_a, pygame.K_LEFT], MovementDirections.LEFT),

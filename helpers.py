@@ -7,7 +7,7 @@ import pygame
 
 
 def make_2d_surface_from_array(
-    array: npt.NDArray[int],
+    array: npt.NDArray[np.int_],
     swap_xy: bool = True,
     color_key: tuple[int, int, int] = (0, 0, 0),
     scaling_factor: int = 1,
@@ -63,10 +63,14 @@ class Event:
         self.type = event_type
         self.data = event_data
 
-    def __eq__(self, other: Enum):
-        return self.type == other
+    def __eq__(self, other: object):
+        if isinstance(other, Enum):
+            return self.type == other
+        else:
+            return NotImplemented
 
 
+# TODO: this shouldn't be a class
 class EventHandler:
     """Static event handler that stores a list of Events, then clears on read"""
 

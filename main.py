@@ -1,4 +1,4 @@
-import os
+import pathlib
 from types import SimpleNamespace
 
 import numpy as np
@@ -23,14 +23,14 @@ def switch_puzzle(puzzle_index, puzzle_list: list):
 
 
 if __name__ == "__main__":
-    os.chdir(os.path.dirname(__file__))
+    directory = (pathlib.Path(__file__) / "..").resolve()
     current_puzzle = 0
     puzzles = [
-        (FlippingPuzzle, "sample_images/Monalisa.png", 4),
-        (SlidingPuzzle, "sample_images/Monalisa.png", 4),
-        (LightsOut, "sample_images/Monalisa.png", 4),
+        (FlippingPuzzle, directory / "sample_images/Monalisa.png", 4),
+        (SlidingPuzzle, directory / "sample_images/Monalisa.png", 4),
+        (LightsOut, directory / "sample_images/Monalisa.png", 4),
         # NOTE: the sample image is not used (it could be... w/ filters?)
-        (Connector, "sample_images/Monalisa.png", 8),
+        (Connector, directory / "sample_images/Monalisa.png", 8),
     ]
 
     screen = pygame.display.set_mode(
@@ -58,8 +58,8 @@ if __name__ == "__main__":
     middle_tile_pixel_location += tile_pixel_size // 2
     starting_offset = np.array((2, 10))
     game_map = GameMap(
-        "GameMap/floor_surface.png",
-        "GameMap/deco_surface.png",
+        directory / "GameMap/floor_surface.png",
+        directory / "GameMap/deco_surface.png",
         tile_pixel_size,
         fitting_tile_amount,
         scaling_factor,
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     game_map.update((0, 0))
     screen.blit(game_map.floor_surface, (0, 0))
     screen.blit(game_map.deco_surface, (0, 0))
-    screen.blit(player.image, middle_tile_pixel_location)
+    screen.blit(player.image, tuple(middle_tile_pixel_location))
     EventHandler.get()
 
     internal_state = SimpleNamespace(in_interaction=False, current_interaction=None)
@@ -86,28 +86,28 @@ if __name__ == "__main__":
             # else:
             #     active_puzzle.loop(event)
 
-        for event in EventHandler.get():
-            if event.type == EventTypes.MAP_POSITION_UPDATE:
+        for game_event in EventHandler.get():
+            if game_event.type == EventTypes.MAP_POSITION_UPDATE:
                 screen.fill((0, 0, 0))
-                game_map.update(event.data)
+                game_map.update(game_event.data)
                 screen.blit(game_map.floor_surface, (0, 0))
                 if player.z_layer:
-                    screen.blit(player.image, middle_tile_pixel_location)
+                    screen.blit(player.image, tuple(middle_tile_pixel_location))
                     screen.blit(game_map.deco_surface, (0, 0))
                 else:
                     screen.blit(game_map.deco_surface, (0, 0))
-                    screen.blit(player.image, middle_tile_pixel_location)
-            if event.type == EventTypes.PLAYER_SPRITE_UPDATE:
-                screen.blit(player.image, middle_tile_pixel_location)
-            if event.type == EventTypes.INTERACTION_EVENT:
-                print(event.data)
-            if event.type == EventTypes.EXIT_INTERACTION:
+                    screen.blit(player.image, tuple(middle_tile_pixel_location))
+            if game_event.type == EventTypes.PLAYER_SPRITE_UPDATE:
+                screen.blit(player.image, tuple(middle_tile_pixel_location))
+            if game_event.type == EventTypes.INTERACTION_EVENT:
+                print(game_event.data)
+            if game_event.type == EventTypes.EXIT_INTERACTION:
                 internal_state.in_interaction = False
-            #     if event == PlayerEvents.SPRITE_UPDATE:
+            #     if game_event == PlayerEvents.SPRITE_UPDATE:
             #         screen.blit(player.image, (0, 0))
-            # if event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
+            # if game_event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
             #     screen.blit(active_puzzle.image, (0, 0))
-            # if event.type == EventTypes.PUZZLE_SOLVED:
+            # if game_event.type == EventTypes.PUZZLE_SOLVED:
             #     current_puzzle += 1
             #     active_puzzle = switch_puzzle(current_puzzle, puzzles)
 

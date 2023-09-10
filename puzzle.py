@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 import PIL
 
 from helpers import EventHandler, EventTypes, make_2d_surface_from_array
@@ -95,19 +96,24 @@ class Puzzle:
             image.size[0] // self.pieces_per_side,
             image.size[1] // self.pieces_per_side,
         )
-        pieces = [None] * self.total_pieces
+        pieces: list[npt.NDArray[np.int_]] = []
         for y in range(self.pieces_per_side):
             for x in range(self.pieces_per_side):
-                pieces[y * self.pieces_per_side + x] = np.array(
-                    image.crop(
-                        (
-                            x * self.puzzle_scale[0],
-                            y * self.puzzle_scale[1],
-                            (x + 1) * self.puzzle_scale[0],
-                            (y + 1) * self.puzzle_scale[1],
+                pieces.append(
+                    np.array(
+                        image.crop(
+                            (
+                                x * self.puzzle_scale[0],
+                                y * self.puzzle_scale[1],
+                                (x + 1) * self.puzzle_scale[0],
+                                (y + 1) * self.puzzle_scale[1],
+                            )
                         )
                     )
                 )
+
+        assert len(pieces) == self.total_pieces
+
         return_pieces = [
             PuzzlePiece(piece, index_relative, self)
             for index_relative, piece in enumerate(pieces)
@@ -149,7 +155,7 @@ class Puzzle:
             return None
         return self.orderlist[tile_index]
 
-    def generate_orderlist(self, origin_tile: int = 0):
+    def generate_orderlist(self):
         """
         generate_orderlist():
 
@@ -187,7 +193,9 @@ class Puzzle:
 class PuzzlePiece:
     """This is a class to store puzzle pieces and the data for them"""
 
-    def __init__(self, image: np.array, relative_index: int, master: Puzzle):
+    def __init__(
+        self, image: npt.NDArray[np.int_], relative_index: int, master: Puzzle
+    ):
         self.image = image
         self.master = master
         self.relative_index = relative_index

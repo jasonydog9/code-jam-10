@@ -1,4 +1,4 @@
-import PIL
+import PIL.Image
 
 
 class Pigpen:
@@ -13,24 +13,14 @@ class Pigpen:
 
     def __init__(
         self,
-        image: PIL.Image,
-        cipher_text: PIL.Image,
+        image: PIL.Image.Image,
+        cipher_text: PIL.Image.Image,
         solution: str,
     ):
-        if type(image) is not PIL.PngImagePlugin.PngImageFile:
-            raise (
-                TypeError(
-                    "Expected type "
-                    + str(PIL.PngImagePlugin.PngImageFile)
-                    + ", got type "
-                    + str(type(image))
-                    + " instead."
-                )
-            )
         self.image = (image,)
         self.cipher_text = cipher_text
         self.solution = solution
-        self.event = []
+        self.event: list[int] = []
 
     def check_solved(self, input_text):
         """

@@ -16,7 +16,7 @@ class ExamplePuzzle(Puzzle):
         self,
         image: PIL.Image.Image,
         pieces_per_side: int,
-        output_size: tuple[int, int] = (),
+        output_size: tuple[int, int],
         puzzle_pos: tuple[int, int] = (0, 0),
     ):
         super().__init__(image, pieces_per_side, output_size, puzzle_pos)
@@ -24,7 +24,7 @@ class ExamplePuzzle(Puzzle):
         self.generate_orderlist()
         self.image_update()
 
-    def loop(self, event: pygame.event):
+    def loop(self, event: pygame.event.Event):
         """
         Summary
 
