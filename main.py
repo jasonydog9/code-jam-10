@@ -40,6 +40,7 @@ if __name__ == "__main__":
     screen.set_colorkey((254, 0, 254))
     # This is required in order to convert PIL images into PyGame Surfaces
     pygame.init()
+    myfont = pygame.font.SysFont("monospace", 15)
 
     running = True
 
@@ -122,5 +123,11 @@ if __name__ == "__main__":
                 EventHandler.add(EventTypes.EXIT_INTERACTION)
                 show_puzzle = False
                 current_puzzle += 1
+                if current_puzzle == len(puzzles):
+                    screen.fill(0, 0, 0)
+
+                    # render text
+                    label = myfont.render("YxOU WIN", 1, (0, 0, 0))
+                    screen.blit(label, (100, 100))
 
         pygame.display.flip()
