@@ -45,9 +45,9 @@ if __name__ == "__main__":
     # screen.blit(active_puzzle.image, (0, 0))
     tile_pixel_size = np.array((16, 12))
     scaling_factor = 4
-    fitting_tile_amount = (
-        np.array(screen_size) // (tile_pixel_size * scaling_factor) + 1
-    )
+    fitting_tile_amount = np.ceil(
+        np.array(screen_size) / (tile_pixel_size * scaling_factor)
+    ).astype(int)
     middle_tile_pixel_location = np.array(
         (fitting_tile_amount // 2) * tile_pixel_size * scaling_factor
     )
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         scaling_factor,
         starting_offset,
     )
-    magic_player_offset = (15, 12)
+    magic_player_offset = (fitting_tile_amount) // 2 + (0, 1)
     player = Player(scaling_factor, starting_offset + magic_player_offset)
     game_map.update((0, 0))
     screen.blit(game_map.floor_surface, (0, 0))
