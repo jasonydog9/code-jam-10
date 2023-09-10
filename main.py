@@ -44,8 +44,8 @@ if __name__ == "__main__":
     running = True
 
     screen.fill((255, 0, 0))
-    # active_puzzle = switch_puzzle(current_puzzle, puzzles)
-    # screen.blit(active_puzzle.image, (0, 0))
+    active_puzzle = switch_puzzle(current_puzzle, puzzles)
+    screen.blit(active_puzzle.image, (0, 0))
     tile_pixel_size = np.array((16, 12))
     scaling_factor = 4
     fitting_tile_amount = np.ceil(
@@ -75,6 +75,9 @@ if __name__ == "__main__":
 
     internal_state = SimpleNamespace(in_interaction=False, current_interaction=None)
 
+    active_puzzle = switch_puzzle(current_puzzle, puzzles)
+    screen.blit(active_puzzle.image, (0, 0))
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -83,8 +86,8 @@ if __name__ == "__main__":
                 running = False
             if not internal_state.in_interaction:
                 player.loop(event)
-            # else:
-            #     active_puzzle.loop(event)
+            active_puzzle.loop(event)
+            screen.blit(active_puzzle.image, (0, 0))
 
         for game_event in EventHandler.get():
             if game_event.type == EventTypes.MAP_POSITION_UPDATE:
@@ -103,12 +106,13 @@ if __name__ == "__main__":
                 print(game_event.data)
             if game_event.type == EventTypes.EXIT_INTERACTION:
                 internal_state.in_interaction = False
+            # if game_event.type == EventTypes.PUZZLE_SOLVED:
             #     if game_event == PlayerEvents.SPRITE_UPDATE:
             #         screen.blit(player.image, (0, 0))
-            # if game_event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
-            #     screen.blit(active_puzzle.image, (0, 0))
-            # if game_event.type == EventTypes.PUZZLE_SOLVED:
-            #     current_puzzle += 1
-            #     active_puzzle = switch_puzzle(current_puzzle, puzzles)
+            if game_event.type == EventTypes.PUZZLE_SPRITE_UPDATE:
+                screen.blit(active_puzzle.image, (0, 0))
+            if game_event.type == EventTypes.PUZZLE_SOLVED:
+                current_puzzle += 1
+                active_puzzle = switch_puzzle(current_puzzle, puzzles)
 
         pygame.display.flip()
