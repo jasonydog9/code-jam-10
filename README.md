@@ -36,11 +36,11 @@
 
 ## Getting Started
 
-To run the game, clone the repo with `git clone <repo url>`
+To run the game, clone the repo with `git clone https://github.com/A5rocks/code-jam-10`
 
 CD into the directory and run `python -m venv venv` to create the venv
 
-Run `./venv/Scripts/activate` or `source venv/bin/activate` to active the venv
+Run `./venv/Scripts/activate` or `source venv/bin/activate` to activate the venv
 
 Run `pip install -r requirements.txt` to install the requirements
 
